@@ -1,0 +1,548 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Samurai Shadow";
+  src: url("/fonts/SamuraiShadow.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --colour-background: #0d0d0d;
+  --color-foreground: #f0f0f0;
+  --color-card: #141414;
+  --color-primary: #acfbff;
+  --color-primary-foreground: #0d0d0d;
+  --color-secondary: #1a1a1a;
+  --color-secondary-foreground: #f0f0f0;
+  --color-muted: #1e1e1e;
+  --color-muted-foreground: #666666;
+  --color-border: #252525;
+  --radius: 0.75rem;
+  --color-highlight: #f0f0f0;
+  --color-surface: #181818;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: var(--colour-background);
+    color: var(--color-foreground);
+    font-family: Caveat, cursive;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .crawta-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    mix-blend-mode: normal;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  .crawta-nav.scrolled {
+    background: rgba(13, 13, 13, 0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .crawta-nav-logo {
+    font-family: "Samurai Shadow", fantasy;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+  .crawta-nav-links {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .crawta-nav-links a {
+    font-family: Caveat, cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+  }
+  .crawta-nav-links a:hover {
+    opacity: 1;
+  }
+  .crawta-hero {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+  .crawta-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #141414;
+    background-image: url("/hero-bg.png");
+    background-position: center 42%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: scale(1.04);
+    transition: transform 8s ease-out;
+  }
+  .crawta-hero-bg.loaded {
+    transform: scale(1);
+  }
+  .crawta-hero-fade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 115% 58% at 50% 91%,
+        rgba(13, 13, 13, 0.48) 0%,
+        rgba(13, 13, 13, 0.1) 42%,
+        transparent 68%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(13, 13, 13, 0.35) 0%,
+        rgba(13, 13, 13, 0) 22%,
+        rgba(13, 13, 13, 0) 52%,
+        rgba(13, 13, 13, 0.35) 68%,
+        rgba(13, 13, 13, 0.82) 88%,
+        rgba(13, 13, 13, 1) 100%
+      );
+  }
+  .crawta-hero-content {
+    position: relative;
+    z-index: 2;
+    flex: 1 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    padding: 0 1.5rem max(0.65rem, 1.5vh, calc(env(safe-area-inset-bottom, 0px) + 0.35rem));
+  }
+  .crawta-hero-name {
+    font-family: "Samurai Shadow", fantasy;
+    font-size: clamp(5rem, 14vw, 14rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--color-foreground);
+    text-shadow:
+      0 0 1px rgba(13, 13, 13, 0.95),
+      0 1px 3px rgba(13, 13, 13, 0.85),
+      0 4px 28px rgba(13, 13, 13, 0.55),
+      0 2px 48px rgba(172, 251, 255, 0.42),
+      0 0 90px rgba(172, 251, 255, 0.18);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: crawta-fade-up 1s 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .crawta-hero-sub {
+    font-family: Caveat, cursive;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+    margin-top: 1rem;
+    opacity: 0;
+    animation: crawta-fade-up 1s 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .crawta-hero-scroll {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: crawta-fade-up 1s 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .crawta-hero-scroll span {
+    font-family: Caveat, cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+  }
+  .crawta-scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--color-primary), transparent);
+    animation: crawta-scroll-pulse 2s ease-in-out infinite;
+  }
+  .crawta-section {
+    width: 100%;
+    padding: 7rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .crawta-section-label {
+    font-family: Caveat, cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 1.2rem;
+  }
+  .crawta-section-title {
+    font-family: "Samurai Shadow", fantasy;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    color: var(--color-foreground);
+    margin-bottom: 3rem;
+  }
+  .crawta-music-section {
+    padding-top: 5rem;
+  }
+  .crawta-tracks {
+    display: grid;
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .crawta-track {
+    background: var(--color-card);
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.18s;
+    position: relative;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+  }
+  .crawta-track:hover {
+    background: var(--color-surface);
+  }
+  .crawta-track-num {
+    font-family: Caveat, cursive;
+    font-size: 1.2rem;
+    color: var(--color-muted-foreground);
+    text-align: center;
+  }
+  .crawta-track:hover .crawta-track-num {
+    display: none;
+  }
+  .crawta-track-play {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+  }
+  .crawta-track:hover .crawta-track-play {
+    display: flex;
+  }
+  .crawta-play-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-foreground);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+  .crawta-play-btn svg {
+    fill: var(--colour-background);
+    margin-left: 2px;
+  }
+  .crawta-track-info {
+    min-width: 0;
+  }
+  .crawta-track-name {
+    font-family: Caveat, cursive;
+    font-weight: 600;
+    font-size: 1.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .crawta-track-meta {
+    font-family: Caveat, cursive;
+    font-size: 0.95rem;
+    color: var(--color-muted-foreground);
+    margin-top: 0.2rem;
+  }
+  .crawta-track-duration {
+    font-family: Caveat, cursive;
+    font-size: 1.1rem;
+    color: var(--color-muted-foreground);
+    letter-spacing: 0.05em;
+  }
+  .crawta-track-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--color-primary);
+    width: 0;
+    transition: width 0.4s;
+  }
+  .crawta-track.playing .crawta-track-bar {
+    width: 100%;
+    transition: width 3s linear;
+  }
+  .crawta-track.playing .crawta-track-name {
+    color: var(--color-foreground);
+  }
+  .crawta-sc-link {
+    margin-top: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 2rem;
+    font-family: Caveat, cursive;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+  }
+  .crawta-sc-link:hover {
+    background: var(--color-foreground);
+    color: var(--colour-background);
+    border-color: var(--color-foreground);
+  }
+  .crawta-sc-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .crawta-signup-section {
+    padding-bottom: 5rem;
+  }
+  .crawta-signup-inner {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: calc(var(--radius) * 2);
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .crawta-signup-inner::before {
+    content: "CRAWTA";
+    position: absolute;
+    right: -1rem;
+    bottom: -2rem;
+    font-family: "Samurai Shadow", fantasy;
+    font-size: 12rem;
+    color: rgba(255, 255, 255, 0.03);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .crawta-signup-text .crawta-section-label {
+    color: var(--color-primary);
+  }
+  .crawta-signup-text .crawta-section-title {
+    color: var(--color-foreground);
+    margin-bottom: 1rem;
+  }
+  .crawta-signup-desc {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--color-muted-foreground);
+    line-height: 1.7;
+  }
+  .crawta-signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .crawta-form-row {
+    display: flex;
+    gap: 0;
+  }
+  .crawta-form-input {
+    flex: 1;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+    padding: 0.9rem 1.2rem;
+    font-family: Caveat, cursive;
+    font-size: 1.1rem;
+    color: var(--color-foreground);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .crawta-form-input::placeholder {
+    color: var(--color-muted-foreground);
+  }
+  .crawta-form-input:focus {
+    background: var(--color-card);
+    border-color: rgba(172, 251, 255, 0.5);
+  }
+  .crawta-form-btn {
+    background: var(--color-primary);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.9rem 1.6rem;
+    font-family: "Samurai Shadow", fantasy;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+  }
+  .crawta-form-btn:hover {
+    opacity: 0.85;
+    transform: translateX(1px);
+  }
+  .crawta-form-note {
+    font-size: 0.72rem;
+    color: var(--color-muted-foreground);
+    letter-spacing: 0.02em;
+  }
+  .crawta-success-msg {
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    padding: 1rem 0;
+  }
+  .crawta-social-row {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .crawta-social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.2rem;
+    border-radius: 2rem;
+    font-family: Caveat, cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    border: 1px solid var(--color-border);
+    color: var(--color-muted-foreground);
+  }
+  .crawta-social-btn:hover {
+    opacity: 0.75;
+  }
+  .crawta-social-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .crawta-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .crawta-footer-logo {
+    font-family: "Samurai Shadow", fantasy;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    color: var(--color-muted-foreground);
+  }
+  .crawta-footer-copy {
+    font-family: Caveat, cursive;
+    font-size: 1rem;
+    color: var(--color-muted-foreground);
+    letter-spacing: 0.04em;
+  }
+  .crawta-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .crawta-reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer utilities {
+  @keyframes crawta-scroll-pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1.15);
+    }
+  }
+  @keyframes crawta-fade-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .crawta-nav {
+    padding: 1rem 1.5rem;
+  }
+  .crawta-section {
+    padding: 5rem 1.5rem;
+  }
+  .crawta-signup-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 2.5rem 2rem;
+  }
+  .crawta-signup-inner::before {
+    font-size: 7rem;
+  }
+  .crawta-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
