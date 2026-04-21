@@ -18,7 +18,7 @@ export function Hero() {
       <div className="crawta-hero-content">
         <h1 className="crawta-hero-name">Crawta</h1>
         <p className="crawta-hero-sub">
-          Electronic &nbsp;·&nbsp; Experimental &nbsp;·&nbsp; Underground
+          Grunge &nbsp;·&nbsp; Indie &nbsp;·&nbsp; Electronic
         </p>
         <div className="crawta-hero-scroll">
           <div className="crawta-scroll-line" />
