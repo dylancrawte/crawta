@@ -42,9 +42,7 @@ export function Newsletter() {
         <div className="crawta-signup-text">
           <p className="crawta-section-label">Stay in the loop</p>
           <h2 className="crawta-section-title">
-            New music.
-            <br />
-            First.
+            Something new is happening.
           </h2>
           <p className="crawta-signup-desc">
             Join the list for early track drops, behind-the-scenes, and show
@@ -53,7 +51,7 @@ export function Newsletter() {
           <div className="crawta-social-row">
             <a
               className="crawta-social-btn"
-              href="https://instagram.com/crawta"
+              href="https://instagram.com/dyl.crawta"
               target="_blank"
               rel="noopener noreferrer"
             >

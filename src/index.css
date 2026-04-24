@@ -160,7 +160,6 @@
       0 0 1px rgba(13, 13, 13, 0.95),
       0 1px 3px rgba(13, 13, 13, 0.85),
       0 4px 28px rgba(13, 13, 13, 0.55),
-      0 2px 48px rgba(173, 104, 34, 0.42),
       0 0 90px rgba(172, 251, 255, 0.18);
     opacity: 0;
     transform: translateY(30px);
@@ -216,14 +215,26 @@
   }
   .crawta-section-title {
     font-family: "Samurai Shadow", fantasy;
-    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    font-size: clamp(2rem, 4vw, 3.6rem);
     letter-spacing: 0.02em;
     line-height: 1.05;
     color: var(--color-foreground);
-    margin-bottom: 3rem;
+    margin-bottom: 0.85rem;
+  }
+  .crawta-music-sub {
+    font-family: Caveat, cursive;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+    margin: 0 0 2.2rem;
   }
   .crawta-music-section {
     padding-top: 5rem;
+  }
+  .crawta-music-previous {
+    margin-top: 3rem;
   }
   .crawta-tracks {
     display: grid;
@@ -248,6 +259,7 @@
     text-align: left;
     color: inherit;
     font: inherit;
+    overflow: hidden;
   }
   .crawta-track:hover {
     background: var(--color-surface);
@@ -261,6 +273,9 @@
   .crawta-track:hover .crawta-track-num {
     display: none;
   }
+  .crawta-track.playing .crawta-track-num {
+    display: none;
+  }
   .crawta-track-play {
     display: none;
     align-items: center;
@@ -268,6 +283,9 @@
     width: 3rem;
   }
   .crawta-track:hover .crawta-track-play {
+    display: flex;
+  }
+  .crawta-track.playing .crawta-track-play {
     display: flex;
   }
   .crawta-play-btn {
@@ -304,30 +322,86 @@
     color: var(--color-muted-foreground);
     margin-top: 0.2rem;
   }
+  .crawta-track-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    min-width: 130px;
+  }
+  .crawta-track-spotify {
+    font-family: Caveat, cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.22rem 0.7rem;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .crawta-track-spotify:hover {
+    background: var(--color-foreground);
+    color: var(--colour-background);
+    border-color: var(--color-foreground);
+  }
+  .crawta-track-streams {
+    font-family: Caveat, cursive;
+    font-size: 0.95rem;
+    color: var(--color-muted-foreground);
+    letter-spacing: 0.05em;
+  }
+  .crawta-track-spotify-icon {
+    width: 16px;
+    height: 16px;
+  }
   .crawta-track-duration {
     font-family: Caveat, cursive;
     font-size: 1.1rem;
     color: var(--color-muted-foreground);
     letter-spacing: 0.05em;
   }
-  .crawta-track-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background: var(--color-primary);
-    width: 0;
-    transition: width 0.4s;
-  }
-  .crawta-track.playing .crawta-track-bar {
-    width: 100%;
-    transition: width 3s linear;
-  }
   .crawta-track.playing .crawta-track-name {
     color: var(--color-foreground);
   }
-  .crawta-sc-link {
+  .crawta-track-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .crawta-track-progress-fill {
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.1s linear;
+  }
+  .crawta-track-progress-marker {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    transform: translate(-50%, 3px);
+    pointer-events: none;
+  }
+  .crawta-music-links {
     margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .crawta-sc-link {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;

@@ -1,41 +1,95 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRevealOnScroll } from "../hooks/useRevealOnScroll"
 
 const tracks = [
   {
     id: "1",
     num: "01",
-    name: "Depth Charge",
-    meta: "2024 · Single",
-    duration: "3:42",
+    name: "Complacent",
+    meta: "2026 · Demo",
+    src: "/audio/complacent-demo.mp3",
+    spotifyUrl: "https://open.spotify.com/artist/0uetZYfTX6zFzEVNT06pNZ?si=o9msvs46Qnq9hrGpfs5zpw",
+    streams: "42.7K",
   },
   {
     id: "2",
     num: "02",
-    name: "Pressure System",
-    meta: "2024 · EP — Undertow",
-    duration: "5:17",
+    name: "Mother Earth",
+    meta: "2026 · Demo",
+    src: "/audio/mother-earth.mp3",
+    spotifyUrl: "https://open.spotify.com/",
+    streams: "9.1K",
   },
   {
     id: "3",
     num: "03",
-    name: "Hollow Ground",
-    meta: "2023 · EP — Undertow",
-    duration: "4:55",
+    name: "White Noise",
+    meta: "2026 · Demo",
+    src: "/audio/white-noise-demo.mp3",
+    spotifyUrl: "https://open.spotify.com/",
+    streams: "15.8K streams",
   },
   {
     id: "4",
     num: "04",
-    name: "Fault Line",
-    meta: "2023 · Single",
-    duration: "6:08",
+    name: "Iris",
+    meta: "2026 · Demo",
+    src: "/audio/iris-demo.mp3",
+    spotifyUrl: "https://open.spotify.com/",
+    streams: "7.3K streams",
   },
 ] as const
+
+const previousTracks = [
+  {
+    id: "p1",
+    num: "01",
+    name: "Prospects",
+    meta: "Electronic",
+    src: "/audio/prospects-master.wav",
+    linkUrl: "https://open.spotify.com/track/2enVbhmGydv09lge4me8kp",
+    platform: "spotify",
+    streams: "42.7K",
+  },
+  {
+    id: "p2",
+    num: "02",
+    name: "Hyph Mngo edit",
+    meta: "Electronic",
+    src: "/audio/hyph-mngo-edit.wav",
+    linkUrl:
+      "https://soundcloud.com/nomoreparties/crawta-hype-mango?in=crawta/sets/crawta-releases",
+    platform: "soundcloud",
+    streams: "26.4K",
+  },
+  {
+    id: "p3",
+    num: "03",
+    name: "Requiem",
+    meta: "Electronic",
+    src: "/audio/requiem-master.wav",
+    linkUrl:
+      "https://soundcloud.com/ducklandbristol/crawta-requiem-free-download?in=crawta/sets/crawta-releases",
+    platform: "soundcloud",
+    streams: "4.3K",
+  },
+] as const
+
+const allTracks = [...tracks, ...previousTracks] as const
 
 function PlayIcon() {
   return (
     <svg viewBox="0 0 10 12" width="9" height="12" aria-hidden>
       <polygon points="0,0 10,6 0,12" />
+    </svg>
+  )
+}
+
+function PauseIcon() {
+  return (
+    <svg viewBox="0 0 10 12" width="10" height="12" aria-hidden>
+      <rect x="0" y="0" width="3" height="12" />
+      <rect x="7" y="0" width="3" height="12" />
     </svg>
   )
 }
@@ -53,15 +107,117 @@ function SoundCloudIcon({ className }: { className?: string }) {
   )
 }
 
+function SpotifyIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M12 0C5.373 0 0 5.373 0 12a12 12 0 0 0 12 12c6.627 0 12-5.373 12-12A12 12 0 0 0 12 0Zm5.503 17.316a.747.747 0 0 1-1.028.247c-2.817-1.721-6.363-2.111-10.543-1.159a.748.748 0 0 1-.333-1.458c4.574-1.043 8.5-.596 11.657 1.333a.748.748 0 0 1 .247 1.037Zm1.468-3.268a.935.935 0 0 1-1.287.309c-3.225-1.983-8.139-2.558-11.954-1.401a.935.935 0 1 1-.542-1.79c4.35-1.319 9.757-.68 13.476 1.607a.935.935 0 0 1 .307 1.275Zm.126-3.404C15.23 8.35 8.852 8.14 5.162 9.269a1.122 1.122 0 1 1-.656-2.146c4.228-1.291 11.262-1.041 15.763 1.484a1.122 1.122 0 1 1-1.172 1.937Z" />
+    </svg>
+  )
+}
+
 export function Music() {
   const [playingId, setPlayingId] = useState<string | null>(null)
+  const audioRefs = useRef<Record<string, HTMLAudioElement>>({})
+  const [currentTimeById, setCurrentTimeById] = useState<Record<string, number>>(
+    {}
+  )
+  const [durationById, setDurationById] = useState<Record<string, number>>({})
   const [headerRevealRef, headerRevealVisible] = useRevealOnScroll(0)
   const [tracksRevealRef, tracksRevealVisible] = useRevealOnScroll(1)
-  const [linkRevealRef, linkRevealVisible] =
-    useRevealOnScroll<HTMLAnchorElement>(2)
+  const [previousHeaderRevealRef, previousHeaderRevealVisible] =
+    useRevealOnScroll(2)
+  const [linkRevealRef, linkRevealVisible] = useRevealOnScroll<HTMLDivElement>(3)
+
+  useEffect(() => {
+    const audioMap = audioRefs.current
+    return () => {
+      Object.values(audioMap).forEach((audio) => {
+        audio.pause()
+        audio.currentTime = 0
+      })
+    }
+  }, [])
+
+  function formatTime(totalSeconds?: number) {
+    if (!totalSeconds || Number.isNaN(totalSeconds)) return "—:—"
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = Math.floor(totalSeconds % 60)
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`
+  }
+
+  function getAudioForTrack(id: string) {
+    const selectedTrack = allTracks.find((track) => track.id === id)
+    if (!selectedTrack) return null
+
+    if (!audioRefs.current[id]) {
+      const audio = new Audio(selectedTrack.src)
+      audio.preload = "metadata"
+      audio.addEventListener("timeupdate", () => {
+        setCurrentTimeById((prev) => ({ ...prev, [id]: audio.currentTime }))
+      })
+      audio.addEventListener("loadedmetadata", () => {
+        setDurationById((prev) => ({ ...prev, [id]: audio.duration }))
+      })
+      audio.addEventListener("ended", () => {
+        setPlayingId((currentId) => (currentId === id ? null : currentId))
+        setCurrentTimeById((prev) => ({ ...prev, [id]: 0 }))
+      })
+      audioRefs.current[id] = audio
+    }
+
+    return audioRefs.current[id]
+  }
+
+  useEffect(() => {
+    tracks.forEach((track) => {
+      getAudioForTrack(track.id)
+    })
+  }, [])
 
   function toggleTrack(id: string) {
-    setPlayingId((prev) => (prev === id ? null : id))
+    const audio = getAudioForTrack(id)
+    if (!audio) return
+
+    if (playingId === id) {
+      audio.pause()
+      setPlayingId(null)
+      return
+    }
+
+    if (playingId && audioRefs.current[playingId]) {
+      const previousAudio = audioRefs.current[playingId]
+      previousAudio.pause()
+      previousAudio.currentTime = 0
+    }
+
+    setPlayingId(id)
+    void audio.play().catch(() => {
+      setPlayingId((currentId) => (currentId === id ? null : currentId))
+    })
+  }
+
+  function seekTrack(id: string, clientX: number, width: number, left: number) {
+    const audio = getAudioForTrack(id)
+    if (!audio || !audio.duration) return
+
+    const progress = Math.min(Math.max((clientX - left) / width, 0), 1)
+    audio.currentTime = progress * audio.duration
+    setCurrentTimeById((prev) => ({ ...prev, [id]: audio.currentTime }))
+
+    if (playingId !== id) {
+      if (playingId && audioRefs.current[playingId]) {
+        audioRefs.current[playingId].pause()
+      }
+      setPlayingId(id)
+      void audio.play().catch(() => {
+        setPlayingId((currentId) => (currentId === id ? null : currentId))
+      })
+    }
   }
 
   return (
@@ -71,45 +227,156 @@ export function Music() {
         className={`crawta-reveal${headerRevealVisible ? " visible" : ""}`}
       >
         <p className="crawta-section-label">Discography</p>
-        <h2 className="crawta-section-title">Latest Tracks</h2>
+        <h2 className="crawta-section-title">Latest Demos</h2>
+        <p className="crawta-music-sub">Grunge &nbsp;·&nbsp; Indie</p>
       </div>
       <div
         ref={tracksRevealRef}
         className={`crawta-tracks crawta-reveal${tracksRevealVisible ? " visible" : ""}`}
       >
-        {tracks.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={`crawta-track${playingId === t.id ? " playing" : ""}`}
-            onClick={() => toggleTrack(t.id)}
-          >
-            <div className="crawta-track-num">{t.num}</div>
-            <div className="crawta-track-play" aria-hidden>
-              <span className="crawta-play-btn">
-                <PlayIcon />
-              </span>
-            </div>
-            <div className="crawta-track-info">
-              <div className="crawta-track-name">{t.name}</div>
-              <div className="crawta-track-meta">{t.meta}</div>
-            </div>
-            <div className="crawta-track-duration">{t.duration}</div>
-            <div className="crawta-track-bar" aria-hidden />
-          </button>
-        ))}
+        {tracks.map((t) => {
+          const progressPercent = Math.min(
+            ((currentTimeById[t.id] ?? 0) / (durationById[t.id] || 1)) * 100,
+            100
+          )
+
+          return (
+            <button
+              key={t.id}
+              type="button"
+              className={`crawta-track${playingId === t.id ? " playing" : ""}`}
+              onClick={() => toggleTrack(t.id)}
+            >
+              <div className="crawta-track-num">{t.num}</div>
+              <div className="crawta-track-play" aria-hidden>
+                <span className="crawta-play-btn">
+                  {playingId === t.id ? <PauseIcon /> : <PlayIcon />}
+                </span>
+              </div>
+              <div className="crawta-track-info">
+                <div className="crawta-track-name">{t.name}</div>
+                <div className="crawta-track-meta">{t.meta}</div>
+              </div>
+              <div className="crawta-track-duration">
+                {formatTime(durationById[t.id] ?? undefined)}
+              </div>
+              <div
+                className="crawta-track-progress"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  const rect = event.currentTarget.getBoundingClientRect()
+                  seekTrack(t.id, event.clientX, rect.width, rect.left)
+                }}
+                aria-hidden
+              >
+                <div
+                  className="crawta-track-progress-fill"
+                  style={{ width: `${progressPercent}%` }}
+                />
+                <div
+                  className="crawta-track-progress-marker"
+                  style={{ left: `${progressPercent}%` }}
+                />
+              </div>
+            </button>
+          )
+        })}
       </div>
 
-      <a
-        ref={linkRevealRef}
-        className={`crawta-sc-link crawta-reveal${linkRevealVisible ? " visible" : ""}`}
-        href="https://soundcloud.com/crawta"
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
+        ref={previousHeaderRevealRef}
+        className={`crawta-music-previous crawta-reveal${previousHeaderRevealVisible ? " visible" : ""}`}
       >
-        <SoundCloudIcon className="crawta-sc-icon" />
-        Listen on SoundCloud
-      </a>
+        <h2 className="crawta-section-title">Previous Music</h2>
+        <p className="crawta-music-sub">Electronic</p>
+        <div className="crawta-tracks">
+          {previousTracks.map((t) => {
+            const progressPercent = Math.min(
+              ((currentTimeById[t.id] ?? 0) / (durationById[t.id] || 1)) * 100,
+              100
+            )
+
+            return (
+              <button
+                key={t.id}
+                type="button"
+                className={`crawta-track${playingId === t.id ? " playing" : ""}`}
+                onClick={() => toggleTrack(t.id)}
+              >
+                <div className="crawta-track-num">{t.num}</div>
+                <div className="crawta-track-play" aria-hidden>
+                  <span className="crawta-play-btn">
+                    {playingId === t.id ? <PauseIcon /> : <PlayIcon />}
+                  </span>
+                </div>
+                <div className="crawta-track-info">
+                  <div className="crawta-track-name">{t.name}</div>
+                  <div className="crawta-track-meta">{t.meta}</div>
+                </div>
+                <div className="crawta-track-right">
+                  <a
+                    className="crawta-track-spotify"
+                    href={t.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(event) => event.stopPropagation()}
+                    aria-label={`Open ${t.name} on ${t.platform === "spotify" ? "Spotify" : "SoundCloud"}`}
+                  >
+                    {t.platform === "spotify" ? (
+                      <SpotifyIcon className="crawta-track-spotify-icon" />
+                    ) : (
+                      <SoundCloudIcon className="crawta-track-spotify-icon" />
+                    )}
+                  </a>
+                  <div className="crawta-track-streams">{t.streams}</div>
+                </div>
+                <div
+                  className="crawta-track-progress"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    const rect = event.currentTarget.getBoundingClientRect()
+                    seekTrack(t.id, event.clientX, rect.width, rect.left)
+                  }}
+                  aria-hidden
+                >
+                  <div
+                    className="crawta-track-progress-fill"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                  <div
+                    className="crawta-track-progress-marker"
+                    style={{ left: `${progressPercent}%` }}
+                  />
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div
+        ref={linkRevealRef}
+        className={`crawta-music-links crawta-reveal${linkRevealVisible ? " visible" : ""}`}
+      >
+        <a
+          className="crawta-sc-link"
+          href="https://soundcloud.com/crawta"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <SoundCloudIcon className="crawta-sc-icon" />
+          Listen on SoundCloud
+        </a>
+        <a
+          className="crawta-sc-link"
+          href="https://open.spotify.com/artist/0uetZYfTX6zFzEVNT06pNZ?si=P_97fDHKT5aypSSkdAzx8Q"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <SpotifyIcon className="crawta-sc-icon" />
+          Listen on Spotify
+        </a>
+      </div>
     </section>
   )
 }
