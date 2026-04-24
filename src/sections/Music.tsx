@@ -45,7 +45,7 @@ const previousTracks = [
     id: "p1",
     num: "01",
     name: "Prospects",
-    meta: "Electronic",
+    meta: "Electronic · Indie",
     src: "/audio/prospects-master.wav",
     linkUrl: "https://open.spotify.com/track/2enVbhmGydv09lge4me8kp",
     platform: "spotify",
