@@ -436,10 +436,28 @@
     padding: 4rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
+    grid-template-rows: auto auto;
+    row-gap: 2rem;
+    column-gap: 4rem;
+    align-items: start;
     position: relative;
     overflow: hidden;
+  }
+  .crawta-signup-text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .crawta-signup-form {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .crawta-signup-social {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .crawta-signup-social .crawta-social-row {
+    margin-top: 0;
   }
   .crawta-signup-inner::before {
     content: "CRAWTA";
@@ -607,13 +625,72 @@
   .crawta-nav {
     padding: 1rem 1.5rem;
   }
+  .crawta-hero-bg {
+    background-position: 37% center;
+    transform: scale(1.08);
+  }
+  .crawta-hero-bg.loaded {
+    transform: scale(1.02);
+  }
   .crawta-section {
     padding: 5rem 1.5rem;
   }
+  .crawta-track-progress {
+    height: 18px;
+    align-items: center;
+  }
+  .crawta-track-progress-fill {
+    height: 4px;
+  }
+  .crawta-track-progress-marker {
+    width: 12px;
+    height: 12px;
+    transform: translate(-50%, 1px);
+  }
   .crawta-signup-inner {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
     gap: 2.5rem;
     padding: 2.5rem 2rem;
+  }
+  .crawta-signup-text,
+  .crawta-signup-form,
+  .crawta-signup-social {
+    grid-column: 1;
+    grid-row: auto;
+    align-self: stretch;
+  }
+  .crawta-signup-text .crawta-section-title {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+    line-height: 1.08;
+  }
+  .crawta-signup-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .crawta-social-row {
+    gap: 0.7rem;
+  }
+  .crawta-social-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .crawta-form-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .crawta-form-input {
+    border-right: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    width: 100%;
+  }
+  .crawta-form-btn {
+    border-radius: var(--radius);
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+  }
+  .crawta-form-note {
+    font-size: 0.85rem;
   }
   .crawta-signup-inner::before {
     font-size: 7rem;

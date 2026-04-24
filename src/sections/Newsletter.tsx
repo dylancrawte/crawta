@@ -48,26 +48,6 @@ export function Newsletter() {
             Join the list for early track drops, behind-the-scenes, and show
             announcements — no noise, just signal.
           </p>
-          <div className="crawta-social-row">
-            <a
-              className="crawta-social-btn"
-              href="https://instagram.com/dyl.crawta"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <InstagramIcon />
-              Instagram
-            </a>
-            <a
-              className="crawta-social-btn"
-              href="https://soundcloud.com/crawta"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SoundCloudIcon />
-              SoundCloud
-            </a>
-          </div>
         </div>
 
         <div className="crawta-signup-form">
@@ -98,10 +78,33 @@ export function Newsletter() {
                 </button>
               </div>
               <p className="crawta-form-note">
-                No spam, unsubscribe anytime. Promise.
+                No spam, unsubscribe anytime.
               </p>
             </form>
           )}
+        </div>
+
+        <div className="crawta-signup-social">
+          <div className="crawta-social-row">
+            <a
+              className="crawta-social-btn"
+              href="https://instagram.com/dyl.crawta"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramIcon />
+              Instagram
+            </a>
+            <a
+              className="crawta-social-btn"
+              href="https://soundcloud.com/crawta"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <SoundCloudIcon />
+              SoundCloud
+            </a>
+          </div>
         </div>
       </div>
     </section>
