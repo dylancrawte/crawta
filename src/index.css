@@ -106,14 +106,15 @@
     inset: 0;
     z-index: 0;
     background-color: #141414;
-    background-image: url("/hero-bg.png");
-    background-position: center 42%;
+    background-image: url("/hero-bg-2.JPG");
+    background-position: center 38%;
     background-size: cover;
     background-repeat: no-repeat;
     transform: scale(1.04);
     transition: transform 8s ease-out;
   }
   .crawta-hero-bg.loaded {
+    
     transform: scale(1);
   }
   .crawta-hero-fade {
@@ -626,7 +627,7 @@
     padding: 1rem 1.5rem;
   }
   .crawta-hero-bg {
-    background-position: 37% center;
+    background-position: 37% 46%;
     transform: scale(1.08);
   }
   .crawta-hero-bg.loaded {
